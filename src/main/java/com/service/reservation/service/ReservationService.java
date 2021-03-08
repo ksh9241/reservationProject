@@ -8,9 +8,9 @@ import com.service.reservation.dto.ReservationPrice;
 public interface ReservationService {
 	List<ReservationInfo> reservationsByEmail(String email);
 	
-	int reservationInfoInsert(ReservationInfo info);
+	int insertReservationInfo(ReservationInfo info);
 
-	int reservationInfoPriceInsert(ReservationPrice price);
+	int insertReservationInfoPrice(ReservationPrice price);
 
-	int cancelEditByReservationInfoId(String reservationInfoId);
+	int editCancelByReservationInfoId(String reservationInfoId);
 }

@@ -1,7 +1,49 @@
 document.addEventListener("DOMContentLoaded",function(){
+	let loginEmail = document.querySelector("#loginEmail").value;
+	if(loginEmail.length>0){
+		emailByreservationInfo(loginEmail)
+	}
 	detail();
 	reservationEnd();
 })
+
+let AdultCount = 0;
+let AdultPrice = 0;
+let AdultDiscount = 0;
+let YoungCount = 0;
+let YoungPrice = 0;
+let YoungDiscount = 0;
+let SetCount = 0;
+let SetPrice = 0;
+let BabyCount = 0;
+let BabyPrice = 0;
+let BabyDiscount = 0;
+let index = 0;
+
+function emailByreservationInfo(email){
+	let xhr = new XMLHttpRequest;
+	xhr.addEventListener("load",function(){
+		if(xhr.readyState === 4){
+			if(xhr.status === 200){
+				let reservationInfo = JSON.parse(xhr.responseText);
+				if(reservationInfo.name != undefined && reservationInfo.tel != undefined){
+					document.querySelector("#name").value = reservationInfo.name
+					document.querySelector("#name").setAttribute("readonly",true)
+					document.querySelector("#tel").value = reservationInfo.tel
+					document.querySelector("#tel").setAttribute("readonly",true)
+					document.querySelector("#email").value = reservationInfo.email
+					document.querySelector("#email").setAttribute("readonly",true)
+				}else{
+					document.querySelector("#email").value = reservationInfo.email
+					document.querySelector("#email").setAttribute("readonly",true)
+				}
+			}
+		}
+	})
+	xhr.open("GET","eamilByReservationInfo?email="+email)
+	xhr.send()
+}
+
 function detail(){
 	let displayInfoId = document.querySelector("#displayInfoId").value;
 	let xhr = new XMLHttpRequest;
@@ -18,99 +60,90 @@ function detail(){
 }
 
 function format(totalPrice){
-	/* 정규식 콤마찍기
-	let regexp = /\B(?=(\d{3})+(?!\d))/g;
-	return totalPrice.toString().replace(regexp, ',');
-	*/
 	return totalPrice.toLocaleString("ko-KR");
 }
 
-function reservation(detail){
+function tikketPriceReset(detail){
 	let tikket = document.querySelectorAll(".ticket_body .qty")
-	let len = tikket.length;
-	
-	let AdultCount = 0;
-	let AdultPrice = 0;
-	let YoungCount = 0;
-	let YoungPrice = 0;
-	let SetCount = 0;
-	let SetPrice = 0;
-	let BabyCount = 0;
-	let BabyPrice = 0;
-	
-	console.log(detail);
 	let size = detail.productPrices.length;
 	
-	//티켓 가격 초기화
 	for(let i=0;i<size;i++){
 		if(detail.productPrices[i].priceTypeName === "A"){
 			AdultPrice = detail.productPrices[i].price
+			AdultDiscount = detail.productPrices[i].discountRate
 			tikket[0].setAttribute("productPriceId",detail.productPrices[i].productPriceId);
 			SetPrice = AdultPrice * 2
 			tikket[2].setAttribute("productPriceId",detail.productPrices[i].productPriceId);
 		}else if(detail.productPrices[i].priceTypeName === "Y"){
 			YoungPrice = detail.productPrices[i].price
+			YoungDiscount = detail.productPrices[i].discountRate
 			tikket[3].setAttribute("productPriceId",detail.productPrices[i].productPriceId);
 		}else if(detail.productPrices[i].priceTypeName === "B"){
 			BabyPrice = detail.productPrices[i].price
+			BabyDiscount = detail.productPrices[i].discountRate
 			tikket[1].setAttribute("productPriceId",detail.productPrices[i].productPriceId);
 		}
 	}
-	
-	//티켓 수량 기본값 설정
-	let tikketEventEdit = function(){
-		if(AdultPrice!=0){
-			let adul = tikket[0].querySelector(".count_control_input");
-				adul.setAttribute("value",AdultCount);
-				tikket[0].querySelector(".total_price").textContent = format(AdultCount * AdultPrice);
-				tikket[0].querySelector(".price").textContent = format(AdultPrice);
-				tikket[0].querySelector(".product_dsc").textContent = format(AdultPrice * 0.85)+"원 (15% 할인가)"
+}
+
+function editTikketCount(){
+	let tikket = document.querySelectorAll(".ticket_body .qty")
+	if(AdultPrice!=0){
+		let adul = tikket[0].querySelector(".count_control_input");
+			adul.setAttribute("value",AdultCount);
+			tikket[0].querySelector(".total_price").textContent = format(AdultCount * AdultPrice);
+			tikket[0].querySelector(".price").textContent = format(AdultPrice);
+			tikket[0].querySelector(".product_dsc").textContent = format(AdultPrice - (AdultDiscount/100 * AdultPrice))+"원 ("+AdultDiscount+"% 할인가)"
+	}else{
+		tikket[0].style.display = "none";
+	}
+	if(BabyPrice!=0){
+		let baby = tikket[1].querySelector(".count_control_input");
+			baby.setAttribute("value",BabyCount);
+			tikket[1].querySelector(".total_price").textContent = format(BabyCount * BabyPrice);
+			tikket[1].querySelector(".price").textContent = format(BabyPrice);
+			tikket[1].querySelector(".product_dsc").textContent = format(BabyPrice - (BabyDiscount/100 * BabyPrice))+"원 ("+BabyDiscount+"% 할인가)"
+	}else{
+		tikket[1].style.display = "none";
+	}
+	if(SetPrice!=0){
+		let set = tikket[2].querySelector(".count_control_input");
+			set.setAttribute("value",SetCount);
+			tikket[2].querySelector(".total_price").textContent = format(SetCount * SetPrice);
+			tikket[2].querySelector(".price").textContent = format(SetPrice)
+	}else{
+		tikket[2].style.display = "none";
+	}
+	if(YoungPrice!=0){
+		let young = tikket[3].querySelector(".count_control_input");
+			young.setAttribute("value",YoungCount);
+			tikket[3].querySelector(".total_price").textContent = format(YoungCount * YoungPrice);
+			tikket[3].querySelector(".price").textContent = format(YoungPrice);
+			tikket[3].querySelector(".product_dsc").textContent = format(YoungPrice - (YoungDiscount/100 * YoungPrice))+"원 ("+YoungDiscount+"% 할인가)"
+	}else{
+		tikket[3].style.display = "none";
+	}
+}
+
+function tikketButtonEvent(){
+	let tikket = document.querySelectorAll(".ticket_body .qty")
+	let len = tikket.length;
+	for(let i=0;i<len;i++){
+		if(tikket[i].querySelector(".count_control_input").value == 0){
+			tikket[i].querySelector(".btn_plus_minus").classList.add("disabled");
+			tikket[i].querySelector(".individual_price").classList.remove("on_color");
+			tikket[i].querySelector(".count_control_input").classList.add("disabled");
 		}else{
-			tikket[0].style.display = "none";
-		}
-		if(BabyPrice!=0){
-			let baby = tikket[1].querySelector(".count_control_input");
-				baby.setAttribute("value",BabyCount);
-				tikket[1].querySelector(".total_price").textContent = format(BabyCount * BabyPrice);
-				tikket[1].querySelector(".price").textContent = format(BabyPrice);
-				tikket[1].querySelector(".product_dsc").textContent = format(BabyPrice * 0.85)+"원 (15% 할인가)"
-		}else{
-			tikket[1].style.display = "none";
-		}
-		if(SetPrice!=0){
-			let set = tikket[2].querySelector(".count_control_input");
-				set.setAttribute("value",SetCount);
-				tikket[2].querySelector(".total_price").textContent = format(SetCount * SetPrice);
-				tikket[2].querySelector(".price").textContent = format(SetPrice)
-		}else{
-			tikket[2].style.display = "none";
-		}
-		if(YoungPrice!=0){
-			let young = tikket[3].querySelector(".count_control_input");
-				young.setAttribute("value",YoungCount);
-				tikket[3].querySelector(".total_price").textContent = format(YoungCount * YoungPrice);
-				tikket[3].querySelector(".price").textContent = format(YoungPrice);
-				tikket[3].querySelector(".product_dsc").textContent = format(YoungPrice * 0.85)+"원 (15% 할인가)"
-		}else{
-			tikket[3].style.display = "none";
-		}
-		
-		for(let i=0;i<len;i++){
-			if(tikket[i].querySelector(".count_control_input").value == 0){
-				tikket[i].querySelector(".btn_plus_minus").classList.add("disabled");
-				tikket[i].querySelector(".individual_price").classList.remove("on_color");
-				tikket[i].querySelector(".count_control_input").classList.add("disabled");
-			}else{
-				tikket[i].querySelector(".btn_plus_minus").classList.remove("disabled");
-				tikket[i].querySelector(".individual_price").classList.add("on_color");
-				tikket[i].querySelector(".count_control_input").classList.remove("disabled");
-			}
+			tikket[i].querySelector(".btn_plus_minus").classList.remove("disabled");
+			tikket[i].querySelector(".individual_price").classList.add("on_color");
+			tikket[i].querySelector(".count_control_input").classList.remove("disabled");
 		}
 	}
-	tikketEventEdit();
-	
-	//수량 빼기 이벤트
-	let index = 0;
+}
+
+function minusCountEvent(){
+	let tikket = document.querySelectorAll(".ticket_body .qty")
+	let len = tikket.length;
 	for(let i=0;i<len;i++){
 		tikket[i].querySelector(".ico_minus3").addEventListener("click",function(evt){
 			index = i;
@@ -120,10 +153,12 @@ function reservation(detail){
 				case 2 : if(SetCount>0)SetCount--; break;
 				case 3 : if(YoungCount>0)YoungCount--; break;
 			}
-		tikketEventEdit();
+		editTikketCount();
+		tikketButtonEvent()
 		
 			//티켓 예매 수량이 1개이상이라면 disable 클래스 제거
 			if((AdultCount+BabyCount+SetCount+YoungCount) > 0 ){
+				
 				document.querySelector(".bk_btn_wrap").classList.remove("disable")
 			}else{
 				document.querySelector(".bk_btn_wrap").classList.add("disable")
@@ -131,8 +166,11 @@ function reservation(detail){
 			//reservationEnd() 이부분때문에 중복처리되는거같음
 		})
 	}
-	
-	//수량 더하기 이벤트
+}
+
+function plusCountEvent(){
+	let tikket = document.querySelectorAll(".ticket_body .qty")
+	let len = tikket.length;
 	for(let i=0;i<len;i++){
 		tikket[i].querySelector(".ico_plus3").addEventListener("click",function(evt){
 			index = i;
@@ -142,7 +180,8 @@ function reservation(detail){
 				case 2 : SetCount++; break;
 				case 3 : YoungCount++; break;
 			}
-		tikketEventEdit();
+		editTikketCount();
+		tikketButtonEvent()
 		
 			//티켓 예매 수량이 1개이상이라면 disable 클래스 제거
 			if((AdultCount+BabyCount+SetCount+YoungCount) > 0 ){
@@ -150,13 +189,44 @@ function reservation(detail){
 			}else{
 				document.querySelector(".bk_btn_wrap").classList.add("disable")
 			}
-			//reservationEnd()
+		})
+	}
+}
+
+function reservation(detail){
+	console.log(detail);
+	
+	//티켓 가격 초기화
+	tikketPriceReset(detail)
+	
+	//티켓 수량 기본값 설정
+	editTikketCount()
+	
+	//티켓 버튼 비활성화
+	tikketButtonEvent()
+		
+	//총 얘매수 수정하기
+	document.querySelector("#totalCount").innerText = (AdultCount+BabyCount+SetCount+YoungCount)
+	
+	
+	//수량 빼기 이벤트
+	minusCountEvent()
+	
+	//수량 더하기 이벤트
+	plusCountEvent()
+}
+
+function noticeViewEvent(){
+	let agreement = document.querySelectorAll(".section_booking_agreement .agreement .btn_text");
+	for(let i=0;i<agreement.length;i++){
+		agreement[i].addEventListener("click",function(evt){
+			evt.target.closest(".agreement").classList.add("open");
 		})
 	}
 }
 
 function reservationEnd(){
-		document.querySelector(".bk_btn").addEventListener("click",function(){
+		document.querySelector(".bk_btn").addEventListener("click",function(){			
 			let check = true;
 			let displayInfoId = document.querySelector("#displayInfoId").value;
 			let tikket=document.querySelectorAll(".ticket_body .qty");
@@ -198,7 +268,6 @@ function reservationEnd(){
 						"reservationInfoId": 0,
 			      		"reservationInfoPriceId": 0
 					})
-					console.log(tikket[i].getAttribute("productpriceid"))
 				}
 			}
 			let reservationParam
@@ -213,7 +282,6 @@ function reservationEnd(){
 				  "reservationYearMonthDay": reservationYearMonthDay
 				}
 			}
-				console.log(reservationParam);
 			
 			if(check){ //이 부분 post로 처리하기.
 				let xhr = new XMLHttpRequest;
@@ -228,17 +296,11 @@ function reservationEnd(){
 				})
 				xhr.open("POST","reservations",true)
 				xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
-				console.log(JSON.stringify(reservationParam))
 				xhr.send(JSON.stringify(reservationParam));
 			}
 			
 		})
 	
 	//약관 더보기
-	let agreement = document.querySelectorAll(".section_booking_agreement .agreement .btn_text");
-	for(let i=0;i<agreement.length;i++){
-		agreement[i].addEventListener("click",function(evt){
-			evt.target.closest(".agreement").classList.add("open");
-		})
-	}
+	noticeViewEvent()
 }

@@ -40,7 +40,7 @@ public class ReservationDao {
 	}
 
 	@Transactional
-	public int reservationInfoInsert(ReservationInfo info) {
+	public int insertReservationInfo(ReservationInfo info) {
 		Map<String,Object> map = new HashMap<>();
 		map.put("product_id", info.getProductId());
 		map.put("display_info_id", info.getDisplayInfoId());
@@ -52,7 +52,7 @@ public class ReservationDao {
 		return reservationInfoInsert.executeAndReturnKey(map).intValue();
 	}
 	
-	public int reservationInfoPriceInsert(ReservationPrice price) {
+	public int insertReservationInfoPrice(ReservationPrice price) {
 		Map<String,Object> map = new HashMap<>();
 		map.put("reservation_info_id", price.getReservationInfoId());
 		map.put("product_price_id", price.getProductPriceId());
@@ -60,7 +60,7 @@ public class ReservationDao {
 		return reservationInfoPriceInsert.executeAndReturnKey(map).intValue();
 	}
 
-	public int cancelEditByReservationInfoId(String reservationInfoId) {
+	public int editCancelByReservationInfoId(String reservationInfoId) {
 		Map<String,Object> map = new HashMap<>();
 		map.put("id", reservationInfoId);
 		return jdbc.update(RESERVATION_EDIT_BY_ID, map);

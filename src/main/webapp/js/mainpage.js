@@ -1,8 +1,13 @@
-function plusStart(start){
-	start+=4;
-	return start;
-}
+document.addEventListener("DOMContentLoaded", function() {
+	categoryListAll(); /*카테고리 리스트*/
+	carousel(); /*프로모션 리스트*/
+})
 
+let totalCount = 0;
+let start = 0;
+let plusStart = 4;
+let categoryCount = 0;
+let categoryId = 0;
 function setTimeOut(ul,counter){
 	let size = document.querySelector(".container_visual").clientWidth;
 	let li=ul.querySelectorAll("li");
@@ -12,14 +17,6 @@ function setTimeOut(ul,counter){
 	ul.style.transition = "transform 0.4s ease-in-out";	
 	if(counter<len){
 		setTimeout(function(){
-			/* 반대로 버튼클릭할때 처리할 부분이라 필요없음.
-			if(li[counter].id === "lastClone"){
-				console.log("안들어옴");
-				ul.style.transition = "none";
-				counter = len - 2;
-				ul.style.transform = "translateX(" + (-size * counter) +"px)";
-			}
-			*/
 			if(li[counter].id === "firstClone"){
 				counter = 0;
 				ul.style.transition = "none";
@@ -40,26 +37,20 @@ function carousel() {
 			if (xhr.status == 200) {
 				let img = document.querySelector(".visual_img");
 				let carousel = JSON.parse(xhr.responseText);
+				console.log(carousel)
+				let promotionTemplate = document.querySelector("#promotionItem").innerHTML
+				let promotionHandlebar = Handlebars.compile(promotionTemplate)
+				let resultPromotion = ""
 				let len = carousel.items.length;
-				let str = "";
-				for (let i = 0; i < len; i++) {
-					let promotionSample = document.querySelector("#promotionItem").innerHTML;
-					str += promotionSample.replace("{saveFileName}", carousel.items[i].saveFileName)
-										  .replace("{id}",carousel.items[i].productId);
+				for(let i=0;i<len;i++){
+					resultPromotion += promotionHandlebar(carousel.items[i])
 				}
-				img.innerHTML = str;
+				img.innerHTML = resultPromotion;		
 				
 				let first = img.firstElementChild;
 				let clonefirst = first.cloneNode(true);
 				clonefirst.id="firstClone";
 				img.insertAdjacentElement("beforeend",clonefirst);
-				
-				// 반대로 버튼 클릭할 때 필요한 부분이라 당장필요없음.
-				//let last = img.lastElementChild;
-				//let clonelast = last.cloneNode(true);
-				//clonelast.id = "lastClone";
-				//img.insertAdjacentElement("afterbegin",clonelast);
-								
 				setTimeOut(img,0);
 			}
 		}
@@ -68,33 +59,40 @@ function carousel() {
 	xhr.send();
 }
 
+function categoryList(category){
+	let categoryUl = document.querySelector(".event_tab_lst");
+	let categoryTemplate = document.querySelector("#categoryTemplate").innerHTML;
+	let categoryHandlebar = Handlebars.compile(categoryTemplate)
+	let resultCategory = ""
+	for (let i = 0; i < category.items.length; i++) {
+		resultCategory += categoryHandlebar(category.items[i])
+		totalCount += category.items[i].count;
+	}
+	document.querySelector(".pink").textContent = totalCount+"개";
+	categoryUl.innerHTML += resultCategory
+	categoryCount = totalCount; //59
+}
+
+function viewButtonEvent(){
+	start += plusStart 
+	mainProductById(categoryId,start);
+	if(start+4>=categoryCount){
+		document.querySelector(".more").style.display = "none";
+	}
+}
+
 function categoryListAll() {
-	let categoryId = 0;
-	let start = 0;
-	let totalCount = 0;
 	let xhr = new XMLHttpRequest;
 	xhr.addEventListener("load", function() {
 		if (xhr.readyState == 4) {
 			if (xhr.status == 200) {
-				
 				mainProductById(categoryId,0);
 				let category = JSON.parse(xhr.responseText);
 				let categoryUl = document.querySelector(".event_tab_lst");
-				let str = "";
 				console.log(category);
-				//JSON객체 카운트
-				for (let i = 0; i < category.items.length; i++) {
-					let categorySample = document.querySelector("#categorySample").innerHTML;
-					str += categorySample.replace("{id}", category.items[i].id)
-										 .replace("{name}", category.items[i].name);
-						totalCount += category.items[i].count;
-				}
-				let categoryCount = totalCount; //59
-				categoryUl.innerHTML += str;
-				let count = document.querySelector(".pink").innerText;
-				let str2 = "";
-				str2 = count.replace("{count}", totalCount);
-				document.querySelector(".pink").innerText = str2;
+				
+				//카테고리 리스트 재정의
+				categoryList(category)
 				
 				//카테고리 클릭 이벤트
 				categoryUl.addEventListener("click", function(evt) {
@@ -119,18 +117,10 @@ function categoryListAll() {
 						}else{
 							categoryCount = totalCount;
 						}
-						str2 = count.replace("{count}", categoryCount);
-						document.querySelector(".pink").innerText = str2;
+						document.querySelector(".pink").textContent = categoryCount+"개";
 					} //if end
 				});
-				
-				document.querySelector(".more").addEventListener("click",function(){
-					start = plusStart(start);
-					mainProductById(categoryId,start);
-					if(start+4>=categoryCount){
-						document.querySelector(".more").style.display = "none";
-					}
-				});
+				document.querySelector(".more").addEventListener("click",viewButtonEvent);
 			}
 		}
 	})
@@ -138,47 +128,28 @@ function categoryListAll() {
 	xhr.send();
 }
 
-
-
 //MainProductListById
 function mainProductById(categoryId,start) {
 	let xhr = new XMLHttpRequest;
 	xhr.addEventListener("load", function() {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 200) {
-					
 					let mainProductList = JSON.parse(xhr.responseText);
-					
 					let productUl = document.querySelectorAll(".lst_event_box");
-					let str1 = "";
-					let str2 = "";
-					for (let i = 0; i < mainProductList.items.length; i++) {
-						let itemList = document.querySelector("#itemList").innerHTML;
-						let change = itemList.replace("{id}", mainProductList.items[i].displayInfoId)
-							.replace("{description}", mainProductList.items[i].productDescription)
-							.replace("{description}", mainProductList.items[i].productDescription)
-							.replace("{saveFileName}", mainProductList.items[i].saveFileName)
-							.replace("{placeName}", mainProductList.items[i].placeName)
-							.replace("{content}", mainProductList.items[i].productContent);
-						if (i % 2 == 0) {
-							str1 = change;
-							productUl[0].innerHTML += str1;
-							str1="";
-						} else {
-							str2 = change;
-							productUl[1].innerHTML += str2;
-							str2="";
+					let itemTemplate = document.querySelector("#itemList").innerHTML
+					let itemHandlebar = Handlebars.compile(itemTemplate)
+					let resultItem = ""
+					for(let i = 0; i < mainProductList.items.length; i++){
+						resultItem = itemHandlebar(mainProductList.items[i])
+						if(i % 2 == 0){
+							productUl[0].innerHTML += resultItem;
+						}else{
+							productUl[1].innerHTML += resultItem;
 						}
 					}
 				}
 			}
 		})
-	 
 	xhr.open("GET", "products?categoryId="+categoryId+"&start="+start); 
 	xhr.send();
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-	categoryListAll(); /*카테고리 리스트*/
-	carousel(); /*프로모션 리스트*/
-})

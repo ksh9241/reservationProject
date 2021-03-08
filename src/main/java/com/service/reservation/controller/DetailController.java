@@ -1,6 +1,5 @@
 package com.service.reservation.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.service.reservation.dto.Comment;
 import com.service.reservation.dto.CommentImage;
-import com.service.reservation.dto.DisplayInfo;
-import com.service.reservation.dto.DisplayInfoImage;
-import com.service.reservation.dto.ProductImage;
-import com.service.reservation.dto.ProductPrice;
+import com.service.reservation.dto.Detail;
 import com.service.reservation.service.CommentImageService;
 import com.service.reservation.service.CommentService;
 import com.service.reservation.service.DisplayInfoImageService;
@@ -50,46 +45,37 @@ public class DetailController {
 	
 	@GetMapping("detail")
 	public String detail(@RequestParam int id,Model model) throws JsonProcessingException {
-		//DisplayInfo d = displayInfoSvc.displayInfoById(id);
-		
-		//ObjectMapper mapper = new ObjectMapper();
-		//String jsonId = mapper.writeValueAsString(id);
-		//System.out.println(id+"\r\n"+d);
 		model.addAttribute("id",id);
 		return "detail";
 	}
 	
-	@ResponseBody
-	@GetMapping("products/{displayInfoId}")
-	public Map<String,Object> detailById(@PathVariable("displayInfoId")String displayInfoId) {
-		DisplayInfo displayInfo = displayInfoSvc.displayInfoById(Integer.parseInt(displayInfoId));
-		List<ProductImage> productImages = productImageSvc.productsImageById(Integer.parseInt(displayInfoId));
-		DisplayInfoImage displayInfoImage = displayInfoImageSvc.displayInfoImageById(Integer.parseInt(displayInfoId));
-		List<ProductPrice> productPrices = productpriceSvc.productPriceById(Integer.parseInt(displayInfoId));
-		List<Comment> comments = commentSvc.commentsById(Integer.parseInt(displayInfoId));
-		
+	public float averageScore(Detail detail) {
 		float averageScore = 0;
-		for(int i=0;i<comments.size();i++) {
-			//List<CommentImage>있는거 db에서 가져온 후 맞는 comments list에 담기
-			averageScore+=comments.get(i).getScore();
-			List<CommentImage> commentImages = commentImageSvc.commentImgByCommentId(comments.get(i).getCommentId());
+		for(int i=0;i<detail.getComments().size();i++) {
+			averageScore+=detail.getComments().get(i).getScore();
+			List<CommentImage> commentImages = commentImageSvc.commentImgByCommentId(detail.getComments().get(i).getCommentId());
 			if(commentImages!=null) {
-				comments.get(i).setCommentImages(commentImages);
+				detail.getComments().get(i).setCommentImages(commentImages);
 			}
 		}
-		averageScore = averageScore / comments.size();
-		
-		
+		averageScore = averageScore / detail.getComments().size();
+		return averageScore;
+	}
+	
+	@ResponseBody
+	@GetMapping("products/{displayInfoId}")
+	public Detail detailById(@PathVariable("displayInfoId")String displayInfoId) {
+		Detail detail = new Detail();
+		detail.setDisplayInfo(displayInfoSvc.displayInfoById(Integer.parseInt(displayInfoId)));
+		detail.setProductImages(productImageSvc.productsImageById(Integer.parseInt(displayInfoId)));
+		detail.setDisplayInfoImage(displayInfoImageSvc.displayInfoImageById(Integer.parseInt(displayInfoId)));
+		detail.setProductPrices(productpriceSvc.productPriceById(Integer.parseInt(displayInfoId))); 
+		detail.setComments(commentSvc.commentsById(Integer.parseInt(displayInfoId)));
+		detail.setAverageScore(averageScore(detail));
 		
 		Map<String,Object> map = new HashMap<>();
-		map.put("displayInfo", displayInfo);
-		map.put("productImages", productImages);
-		map.put("displayInfoImage", displayInfoImage);
-		map.put("comments", comments);
-		map.put("averageScore", averageScore);
-		map.put("productPrices", productPrices);
+		map.put("data", detail);
 		
-		
-		return map;
+		return detail;
 	}
 }

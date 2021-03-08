@@ -11,6 +11,7 @@
 	content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
 <title>네이버 예약</title>
 <link href="css/style.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 <script type="text/javascript" src="js/myreservation.js"></script>
 </head>
 
@@ -262,21 +263,21 @@
 			<div class="left"></div>
 			<div class="middle">
 				<div class="card_detail">
-					<em class="booking_number">No.{reservationInfoId}</em>
-					<h4 class="tit">{productDescription}</h4>
+					<em class="booking_number">No.{{reservationInfoId}}</em>
+					<h4 class="tit">{{displayInfo.productDescription}}</h4>
 					<ul class="detail">
 						<li class="item"><span class="item_tit">일정</span> <em
-							class="item_dsc"> {reservationDate} </em></li>
+							class="item_dsc"> {{#format reservationDate}}{{reservationDate}}{{/format}} </em></li>
 						<li class="item"><span class="item_tit">내역</span> <em
 							class="item_dsc"> 내역이 없습니다. </em></li>
 						<li class="item"><span class="item_tit">장소</span> <em
-							class="item_dsc"> {placeStreet} </em></li>
+							class="item_dsc"> {{displayInfo.placeStreet}} </em></li>
 						<li class="item"><span class="item_tit">업체</span> <em
 							class="item_dsc"> 업체명이 없습니다. </em></li>
 					</ul>
 					<div class="price_summary">
 						<span class="price_tit">결제 예정금액</span> <em
-							class="price_amount"> <span>{totalPrice}</span> <span
+							class="price_amount"> <span>{{#priceFormat totalPrice}}{{price}}{{/priceFormat}}</span> <span
 							class="unit">원</span>
 						</em>
 					</div>
@@ -308,26 +309,26 @@
 			<div class="left"></div>
 			<div class="middle">
 				<div class="card_detail">
-					<em class="booking_number">No.{reservationInfoId}</em>
-					<h4 class="tit">{productDescription}</h4>
+					<em class="booking_number">No.{{reservationInfoId}}</em>
+					<h4 class="tit">{{displayInfo.productDescription}}</h4>
 					<ul class="detail">
 						<li class="item"><span class="item_tit">일정</span> <em
-							class="item_dsc"> {reservationDate} </em></li>
+							class="item_dsc"> {{#format reservationDate}}{{reservationDate}}{{/format}} </em></li>
 						<li class="item"><span class="item_tit">내역</span> <em
 							class="item_dsc"> 내역이 없습니다. </em></li>
 						<li class="item"><span class="item_tit">장소</span> <em
-							class="item_dsc"> {placeStreet} </em></li>
+							class="item_dsc"> {{displayInfo.placeStreet}} </em></li>
 						<li class="item"><span class="item_tit">업체</span> <em
 							class="item_dsc"> 업체명이 없습니다. </em></li>
 					</ul>
 					<div class="price_summary">
 						<span class="price_tit">결제 예정금액</span> <em
-							class="price_amount"> <span>{totalPrice}</span> <span
+							class="price_amount"> <span>{{#priceFormat totalPrice}}{{price}}{{/priceFormat}}</span> <span
 							class="unit">원</span>
 						</em>
 					</div>
 					<div class="booking_cancel">
-						<a href="./reviewWrite?reservationInfoId={reserv}&productId={product}"><button class="btn">
+						<a href="./reviewWrite?reservationInfoId={{reservationInfoId}}&productId={{productId}}"><button class="btn">
 								<span>예매자 리뷰 남기기</span>
 							</button></a>
 					</div>
@@ -350,21 +351,21 @@
 			<div class="left"></div>
 			<div class="middle">
 				<div class="card_detail">
-					<em class="booking_number">No.{reservationInfoId}</em>
-					<h4 class="tit">{productDescription}</h4>
+					<em class="booking_number">No.{{reservationInfoId}}</em>
+					<h4 class="tit">{{displayInfo.productDescription}}</h4>
 					<ul class="detail">
 						<li class="item"><span class="item_tit">일정</span> <em
-							class="item_dsc"> {reservationDate} </em></li>
+							class="item_dsc"> {{#format reservationDate}}{{reservationDate}}{{/format}} </em></li>
 						<li class="item"><span class="item_tit">내역</span> <em
 							class="item_dsc"> 내역이 없습니다. </em></li>
 						<li class="item"><span class="item_tit">장소</span> <em
-							class="item_dsc"> {placeStreet} </em></li>
+							class="item_dsc"> {{displayInfo.placeStreet}} </em></li>
 						<li class="item"><span class="item_tit">업체</span> <em
 							class="item_dsc"> 업체명이 없습니다. </em></li>
 					</ul>
 					<div class="price_summary">
 						<span class="price_tit">결제 예정금액</span> <em
-							class="price_amount"> <span>{totalPrice}</span> <span
+							class="price_amount"> <span>{{#priceFormat totalPrice}}{{price}}{{/priceFormat}}</span> <span
 							class="unit">원</span>
 						</em>
 					</div>

@@ -35,38 +35,39 @@ public class ReservationController {
 		return "reserve";
 	}
 	
-	@ResponseBody
-	@PostMapping("reservations")
-	public Map<String,Object> insertReservation(@RequestBody ReservationParam reservation) {
+	public int setReservation(ReservationParam params) {
 		List<ReservationPrice> price = new ArrayList<>();
 		int n=0;
 		Date d = new Date();
 		Timestamp time = new Timestamp(System.currentTimeMillis());
 		
-		//존재하지 않는다면 reservation의 정보를 info에 담아서 새로운 reservationInfo 객체 생성 후 그 객체 id를 통해 reservation_info_price 객체 생성
-			ReservationInfo info = new ReservationInfo();
-			info.setDisplayInfoId(reservation.getDisplayInfoId());
-			info.setProductId(reservation.getProductId());
-			info.setReservationName(reservation.getReservationName());
-			info.setReservationTelephone(reservation.getReservationTelephone());
-			info.setReservationEmail(reservation.getReservationEmail());
-			info.setReservationDate(reservation.getReservationYearMonthDay());
-			info.setCreateDate(time);
-			info.setModifyDate(time);
-			
-			int id = reservationSvc.reservationInfoInsert(info);
-			
-			if(id>0) {
-				for(int i=0;i<reservation.getPrices().size();i++) {
-					reservation.getPrices().get(i).setReservationInfoId(id);
-					price.add(reservation.getPrices().get(i));
-					n = reservationSvc.reservationInfoPriceInsert(price.get(i));
-				}
-			}
+		ReservationInfo info = new ReservationInfo();
+		info.setDisplayInfoId(params.getDisplayInfoId());
+		info.setProductId(params.getProductId());
+		info.setReservationName(params.getReservationName());
+		info.setReservationTelephone(params.getReservationTelephone());
+		info.setReservationEmail(params.getReservationEmail());
+		info.setReservationDate(params.getReservationYearMonthDay());
+		info.setCreateDate(time);
+		info.setModifyDate(time);
 		
+		int id = reservationSvc.insertReservationInfo(info);
+		
+		if(id>0) {
+			for(int i=0;i<params.getPrices().size();i++) {
+				params.getPrices().get(i).setReservationInfoId(id);
+				price.add(params.getPrices().get(i));
+				n = reservationSvc.insertReservationInfoPrice(price.get(i));
+			}
+		}
+		return n;
+	}
+	
+	@ResponseBody
+	@PostMapping("reservations")
+	public Map<String,Object> insertReservation(@RequestBody ReservationParam reservation) {
 		Map<String,Object> map = new HashMap<>();
-		// reservation_info_price 객체 생성을 성공적으로 마쳤다면 email을 보내준다.
-		if(n>0) {
+		if(setReservation(reservation)>0) {
 			map.put("email", reservation.getReservationEmail());
 		}
 		return map;
@@ -75,7 +76,21 @@ public class ReservationController {
 	@ResponseBody
 	@PutMapping("reservations/{reservationInfoId}")
 	public int myReservationEdit(@PathVariable("reservationInfoId") String reservationInfoId) {
-		System.out.println(reservationInfoId);
-		return reservationSvc.cancelEditByReservationInfoId(reservationInfoId); 
+		return reservationSvc.editCancelByReservationInfoId(reservationInfoId); 
+	}
+	
+	@ResponseBody
+	@GetMapping("eamilByReservationInfo")
+	public Map<String,String> emailByReservationInfo(@RequestParam String email){
+		List<ReservationInfo> list = reservationSvc.reservationsByEmail(email);
+		Map<String, String> map = new HashMap<>();
+		if(list.size()>0) {
+			map.put("name", list.get(0).getReservationName());
+			map.put("tel", list.get(0).getReservationTelephone());
+			map.put("email", list.get(0).getReservationEmail());
+		}else {
+			map.put("email",email);
+		}
+		return map;
 	}
 }

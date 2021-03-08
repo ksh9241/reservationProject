@@ -60,6 +60,11 @@ public class MainPageController {
 	@ResponseBody
 	@GetMapping("products")
 	public Map<String,Object> mainProductListById(@RequestParam int categoryId,@RequestParam int start){
+		Map<String, Object> map = itemsByCategoryId(categoryId, start);
+		return map;
+	}
+	
+	public Map<String,Object> itemsByCategoryId(int categoryId,int start){
 		Map<String, Object> map = new HashMap<>();
 		if(categoryId!=0) {
 			List<Product> products = ProductSvc.productListByCategoryId(categoryId,start);

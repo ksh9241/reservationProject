@@ -39,6 +39,11 @@ version="3.1">
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
+	<session-config> <!-- 세션 유지 시간 설정 가능 -->
+		<session-timeout>30</session-timeout>
+	</session-config>
+	
 	<servlet-mapping> <!-- "/" url요청이 들어오면 26번째줄 Servlet-name과 같은 name으로 매핑되어있는 Servlet-class가 실행한다. 1.-->
 		<servlet-name>mvc</servlet-name> <!-- 26번째 줄의 servlet명 -->
 		<url-pattern>/</url-pattern>

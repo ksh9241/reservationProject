@@ -14,18 +14,18 @@ public class ReViewServiceImpl implements ReViewService {
 	ReViewDao reViewDao; 
 	
 	@Override
-	public int fileInfoInsert(Map<String, Object> map) {
-		return reViewDao.fileInfoInsert(map);
+	public int insertFileInfo(Map<String, Object> map) {
+		return reViewDao.insertFileInfo(map);
 	}
 
 	@Override
-	public int reservationInfoUserCommentInsert(Map<String, Object> commentMap) {
-		return reViewDao.reservationInfoUserCommentInsert(commentMap);
+	public int insertReservationInfoUserComment(Map<String, Object> commentMap) {
+		return reViewDao.insertReservationInfoUserComment(commentMap);
 	}
 
 	@Override
-	public void reservationInfoUserCommentImageInsert(Map<String, Object> commentImageMap) {
-		reViewDao.reservationInfoUserCommentImageInsert(commentImageMap);
+	public void insertReservationInfoUserCommentImage(Map<String, Object> commentImageMap) {
+		reViewDao.insertReservationInfoUserCommentImage(commentImageMap);
 	}
 
 }

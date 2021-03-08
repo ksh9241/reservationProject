@@ -20,18 +20,18 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public int reservationInfoInsert(ReservationInfo info) {
-		return reservationDao.reservationInfoInsert(info);
+	public int insertReservationInfo(ReservationInfo info) {
+		return reservationDao.insertReservationInfo(info);
 	}
 
 	@Override
-	public int reservationInfoPriceInsert(ReservationPrice price) {
-		return reservationDao.reservationInfoPriceInsert(price);
+	public int insertReservationInfoPrice(ReservationPrice price) {
+		return reservationDao.insertReservationInfoPrice(price);
 	}
 
 	@Override
-	public int cancelEditByReservationInfoId(String reservationInfoId) {
-		return reservationDao.cancelEditByReservationInfoId(reservationInfoId);
+	public int editCancelByReservationInfoId(String reservationInfoId) {
+		return reservationDao.editCancelByReservationInfoId(reservationInfoId);
 	}
 
 }

@@ -30,7 +30,12 @@ public class MyReservationController {
 	
 	@GetMapping("myreservation")
 	public String myReservation(@RequestParam String resrv_email,Model model,HttpSession session) {
-		session.setAttribute("email", resrv_email);
+		List<ReservationInfo> list = reservationSvc.reservationsByEmail(resrv_email);
+		if(list.size()>0) {
+			session.setAttribute("email", resrv_email);
+		}else {
+			session.invalidate();
+		}
 		return "myreservation";
 	}
 	

@@ -12,6 +12,7 @@
 	content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
 <title>네이버 예약</title>
 <link href="css/style.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 <script src="js/mainpage.js"></script>
 </head>
 
@@ -139,8 +140,8 @@
 	</footer>
 
 	<script type="rv-template" id="promotionItem">
-    <li class="item" style="background-image: url(http://localhost:9090/api/{saveFileName});">
-        <a href="detail?id={id}"> <span class="img_btm_border"></span> <span class="img_right_border"></span> <span class="img_bg_gra"></span>
+    <li class="item" style="background-image: url(http://localhost:9090/api/{{saveFileName}});">
+        <a href="detail?id={{productId}}"> <span class="img_btm_border"></span> <span class="img_right_border"></span> <span class="img_bg_gra"></span>
             <div class="event_txt">
                 <h4 class="event_txt_tit"></h4>
                 <p class="event_txt_adr"></p>
@@ -152,23 +153,23 @@
 	
 	<script type="rv-template" id="itemList">
         <li class="item">
-            <a href="detail?id={id}" class="item_book">
+            <a href="detail?id={{displayInfoId}}" class="item_book">
                 <div class="item_preview">
-                    <img alt="{description}" class="img_thumb" src="http://localhost:9090/api/{saveFileName}">
+                    <img alt="{{description}}" class="img_thumb" src="http://localhost:9090/api/{{saveFileName}}">
                     <span class="img_border"></span>
                 </div>
                 <div class="event_txt">
-                    <h4 class="event_txt_tit"> <span>{description}</span> <small class="sm">{placeName}</small> </h4>
-                    <p class="event_txt_dsc">{content}</p>
+                    <h4 class="event_txt_tit"> <span>{{description}}</span> <small class="sm">{{placeName}}</small> </h4>
+                    <p class="event_txt_dsc">{{content}}</p>
                 </div>
             </a>
         </li>
     </script>
     
-    <script type="rv-template" id="categorySample">
-    <li class="item" data-category="{id}">
+    <script type="rv-template" id="categoryTemplate">
+    <li class="item" data-category="{{id}}">
 			<a class="anchor">
-				<span>{name}</span>
+				<span>{{name}}</span>
 			</a>
 		</li>
     </script>

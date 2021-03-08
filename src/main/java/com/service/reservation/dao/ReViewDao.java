@@ -27,15 +27,15 @@ public class ReViewDao {
 		reservationInfoUserCommentImageInsertAction = new SimpleJdbcInsert(dataSource).withTableName("reservation_user_comment_image").usingGeneratedKeyColumns("id");
 	}
 	
-	public int fileInfoInsert(Map<String,Object>map) {
+	public int insertFileInfo(Map<String,Object>map) {
 		return fileInfoInsertAction.executeAndReturnKey(map).intValue();
 	}
 
-	public int reservationInfoUserCommentInsert(Map<String, Object> commentMap) {
+	public int insertReservationInfoUserComment(Map<String, Object> commentMap) {
 		return reservationInfoUserCommentInsertAction.executeAndReturnKey(commentMap).intValue();
 	}
 
-	public void reservationInfoUserCommentImageInsert(Map<String, Object> commentImageMap) {
+	public void insertReservationInfoUserCommentImage(Map<String, Object> commentImageMap) {
 		reservationInfoUserCommentImageInsertAction.executeAndReturnKey(commentImageMap);
 	}
 }

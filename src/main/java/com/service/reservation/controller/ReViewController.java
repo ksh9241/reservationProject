@@ -60,7 +60,7 @@ public class ReViewController {
 		commentMap.put("create_date", time);
 		commentMap.put("modify_date", time);
 		
-		int commentId = reViewSvc.reservationInfoUserCommentInsert(commentMap);
+		int commentId = reViewSvc.insertReservationInfoUserComment(commentMap);
 		
 		//파일 저장할 절대경로 얻기
 		ServletContext app = req.getServletContext();
@@ -97,7 +97,7 @@ public class ReViewController {
 			fileMap.put("modify_date", time);
 			fileMap.put("delete_flag", 0);
 			
-			fileId = reViewSvc.fileInfoInsert(fileMap);
+			fileId = reViewSvc.insertFileInfo(fileMap);
 		}
 		
 		if(fileId>0) {
@@ -106,9 +106,8 @@ public class ReViewController {
 			commentImageMap.put("reservation_user_comment_id", commentId);
 			commentImageMap.put("file_id", fileId);
 			
-			reViewSvc.reservationInfoUserCommentImageInsert(commentImageMap);
+			reViewSvc.insertReservationInfoUserCommentImage(commentImageMap);
 		}
-		
 		
 		Map<String,Object> result = new HashMap<String, Object>();
 		result.put("email", session.getAttribute("email"));

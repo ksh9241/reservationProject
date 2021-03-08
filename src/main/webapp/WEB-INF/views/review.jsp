@@ -12,6 +12,7 @@
 <title>네이버 예약</title>
 <link href="css/style.css" rel="stylesheet">
 <script type="text/javascript" src="js/review.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 </head>
 
 <body>
@@ -85,11 +86,12 @@
 			<li class="list_item">
                 <div>
                     <div class="review_area no_img">
-                         <h4 class="resoc_name">{productDescription}</h4>
-                        	<p class="review">{comment}</p>
+                         <h4 class="resoc_name">{{../displayInfo.productDescription}}</h4>
+                        	<p class="review">{{comment}}</p>
                 	</div>
                      <div class="info_area">
-                         <div class="review_info"> <span class="grade">{score}</span> <span class="name">{reservationName}</span> <span class="date">{reservationDate} 방문</span> </div>
+                         <div class="review_info"> <span class="grade">{{score}}</span> <span class="name">{{reservationName}}</span>
+						 <span class="date">{{#dateFormat reservationDate}} {{reservationDate}} {{/dateFormat}} 방문</span> </div>
                     </div>
                 </div>
              </li>
@@ -101,16 +103,16 @@
 					<div class="thumb_area">
 						<a href="#" class="thumb" title="이미지 크게 보기"> <img
 						width="90" height="90" class="img_vertical_top"
-						src="img/{saveFileName}" alt="리뷰이미지">
+						src="img/{{commentImages.[0].saveFileName}}" alt="리뷰이미지">
 						</a> <span class="img_count">1</span>
 					</div>
-					<h4 class="resoc_name">{productDescription}</h4>
-						<p class="review">{comment}</p>
+					<h4 class="resoc_name">{{../displayInfo.productDescription}}</h4>
+						<p class="review">{{comment}}</p>
 				</div>
 				<div class="info_area">
 					<div class="review_info">
-						<span class="grade">{score}</span> <span class="name">{reservationName}</span>
-							<span class="date">{reservationDate} 방문</span>
+						<span class="grade">{{score}}</span> <span class="name">{{reservationName}}</span>
+							<span class="date">{{#dateFormat reservationDate}} {{reservationDate}} {{/dateFormat}} 방문</span>
 					</div>
 				</div>
 			</div>

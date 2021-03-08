@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
     <title>네이버 예약</title>
     <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script> -->
     <script src="js/detail.js"></script>
     <style>
         .container_visual {
@@ -56,38 +58,7 @@
                         <div>
                             <div class="container_visual" style="width: 414px;">
                                 <ul class="visual_img detail_swipe">
-                                    <li class="item" style="width: 414px;"> <img alt="" class="img_thumb" src=""> <span class="img_bg"></span>
-                                        <div class="visual_txt">
-                                            <div class="visual_txt_inn">
-                                                <h2 class="visual_txt_tit"> <span></span> </h2>
-                                                <p class="visual_txt_dsc"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="item" style="width: 414px;"> <img alt="" class="img_thumb" src=""> <span class="img_bg"></span>
-                                        <div class="visual_txt">
-                                            <div class="visual_txt_inn">
-                                                <h2 class="visual_txt_tit"> <span></span> </h2>
-                                                <p class="visual_txt_dsc"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="item" style="width: 414px;"> <img alt="" class="img_thumb" src=""> <span class="img_bg"></span>
-                                        <div class="visual_txt">
-                                            <div class="visual_txt_inn">
-                                                <h2 class="visual_txt_tit"> <span></span> </h2>
-                                                <p class="visual_txt_dsc"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="item" style="width: 414px;"> <img alt="" class="img_thumb" src=""> <span class="img_bg"></span>
-                                        <div class="visual_txt">
-                                            <div class="visual_txt_inn">
-                                                <h2 class="visual_txt_tit"> <span></span> </h2>
-                                                <p class="visual_txt_dsc"></p>
-                                            </div>
-                                        </div>
-                                    </li>
+                                   	<!-- carousel Image  -->
                                 </ul>
                             </div>
                             <div class="prev">
@@ -122,8 +93,8 @@
                         </p>
                     </div>
                     <!-- [D] 토글 상황에 따라 bk_more에 display:none 추가 -->
-                    <a href="#" class="bk_more _open"> <span class="bk_more_txt">펼쳐보기</span> <i class="fn fn-down2"></i> </a>
-                    <a href="#" class="bk_more _close" style="display: none;"> <span class="bk_more_txt">접기</span> <i class="fn fn-up2"></i> </a>
+                    <a class="bk_more _open"> <span class="bk_more_txt">펼쳐보기</span> <i class="fn fn-down2"></i> </a>
+                    <a class="bk_more _close" style="display: none;"> <span class="bk_more_txt">접기</span> <i class="fn fn-up2"></i> </a>
                 </div>
                 <div class="section_event">
                     <div class="event_info_box">
@@ -160,10 +131,10 @@
                     <!-- [D] tab 선택 시 anchor에 active 추가 -->
                     <ul class="info_tab_lst">
                         <li class="item active _detail">
-                            <a href="#" class="anchor active"> <span>상세정보</span> </a>
+                            <a class="anchor active"> <span>상세정보</span> </a>
                         </li>
                         <li class="item _path">
-                            <a href="#" class="anchor"> <span>오시는길</span> </a>
+                            <a class="anchor"> <span>오시는길</span> </a>
                         </li>
                     </ul>
                     <!-- [D] 상세정보 외 다른 탭 선택 시 detail_area_wrap에 hide 추가 -->
@@ -175,6 +146,7 @@
                                     <li class="detail_info_lst">
                                         <strong class="in_tit">[소개]</strong>
                                         <p class="in_dsc">
+                                   		
                                         </p>
                                     </li>
                                     <li class="detail_info_lst"> <strong class="in_tit">[공지사항]</strong>
@@ -238,33 +210,46 @@
     </footer>
     <div id="photoviwer"></div>
     
-    <script type="rv-template" id="commentImgSample">
-		<li class="list_item">
+    <script type="rv-template" id="commentImgTemplate">
+<li class="list_item">
                                     <div>
                                         <div class="review_area">
                                             <div class="thumb_area">
-                                                <a href="#" class="thumb" title="이미지 크게 보기"> <img width="90" height="90" class="img_vertical_top" src="img/{saveFileName}" alt="리뷰이미지"> </a> <span class="img_count" style="display:none;">1</span>                                                </div>
+                                                <a class="thumb" title="이미지 크게 보기"> <img width="90" height="90" class="img_vertical_top" src="img/{{commentImages.[0].saveFileName}}" alt="리뷰이미지"> </a> <span class="img_count" style="display:none;">1</span>                                                </div>
                                             <h4 class="resoc_name"></h4>
-                                            <p class="review">{comment}</p>
+                                            <p class="review">{{comment}}</p>
                                         </div>
                                         <div class="info_area">
-                                            <div class="review_info"> <span class="grade">{score}</span> <span class="name">{reservationName}</span> <span class="date">{date} 방문</span> </div>
+                                            <div class="review_info"> <span class="grade">{{score}}</span> <span class="name">{{reservationName}}</span> <span class="date">{{#formatDate reservationDate}}{{reservationDate}}{{/formatDate}} 방문</span> </div>
                                         </div>
                                     </div>
                                 </li>
 	</script>
-	<script type="rv-template" id="commentSample">
+	<script type="rv-template" id="commentTemplate">
 		<li class="list_item">
                                     <div>
                                         <div class="review_area no_img">
                                             <h4 class="resoc_name"></h4>
-                                            <p class="review">{comment}</p>
+                                            <p class="review">{{comment}}</p>
                                         </div>
                                         <div class="info_area">
-                                            <div class="review_info"> <span class="grade">{score}</span> <span class="name">{reservationName}</span> <span class="date">{date} 방문</span> </div>
+                                            <div class="review_info"> <span class="grade">{{score}}</span> <span class="name">{{reservationName}}</span> <span class="date">{{#formatDate reservationDate}}{{reservationDate}}{{/formatDate}} 방문</span> </div>
                                         </div>
                                     </div>
                                 </li>
+	</script>
+	<script type="my-template" id="carouselTemplate">
+	{{#each productImages}}	
+<li class="item" style="width: 414px;">
+				 <img alt="" class="img_thumb" src={{saveFileName}}> <span class="img_bg"></span>
+                                        <div class="visual_txt">
+                                            <div class="visual_txt_inn">
+                                                <h2 class="visual_txt_tit"> <span>{{../displayInfo.productDescription}}</span> </h2>
+                                                <p class="visual_txt_dsc"></p>
+                                            </div>
+                                        </div>
+                                    </li>
+	{{/each}}
 	</script>
 </body>
 
