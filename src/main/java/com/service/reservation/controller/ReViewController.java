@@ -18,10 +18,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.service.reservation.dto.CommentResponse;
+import com.service.reservation.dto.Test;
 import com.service.reservation.service.ReViewService;
 
 @Controller
@@ -65,7 +69,7 @@ public class ReViewController {
 		//파일 저장할 절대경로 얻기
 		ServletContext app = req.getServletContext();
 		String upDir = app.getRealPath("/img");
-		//String upDir = "C:\\myjava\\workspace\\myproject\\src\\main\\webapp\\img";
+		//String upDir = "C:\myjava\workspace\myproject\src\main\webapp\img";
 		
 		//System.out.println(upDir);
 		
@@ -112,5 +116,74 @@ public class ReViewController {
 		Map<String,Object> result = new HashMap<String, Object>();
 		result.put("email", session.getAttribute("email"));
 		return result;
+	}
+	
+	@GetMapping("reviewEdit")
+	public String reviewEdit(@RequestParam("commentId")int commentId, Model model) {
+		model.addAttribute("commentId",commentId);
+		return "reviewEdit";
+	}
+	
+	@ResponseBody
+	@GetMapping("reservation/{commentId}/edit")
+	public Test selectCommentByCommentId(@PathVariable("commentId") int commentId){
+		int check = reViewSvc.checkImage(commentId);
+		
+		Test result = new Test();
+		if(check>0) {
+			result = reViewSvc.selectComment(commentId);
+		}else {
+			result = reViewSvc.selectNotImgComment(commentId);
+		}
+		System.out.println(result);
+		return result;
+	}
+	
+	@GetMapping("reservation/delete/{commentId}")
+	public ModelAndView deleteReservation(@PathVariable("commentId") int commentId,HttpServletRequest req, ModelAndView mav) {
+		int check = reViewSvc.checkImage(commentId);
+		Test result = new Test();
+		if(check>0) {
+			result = reViewSvc.selectComment(commentId);
+			String saveFileName = result.getSave_file_name();
+			int fileId = result.getFile_id();
+			
+			//절대경로 얻기
+			ServletContext app = req.getServletContext();
+			String upDir = app.getRealPath("/img");
+			
+			//해당 디렉토리에서 파일 있으면 파일삭제
+			File deleteImg = new File(upDir+File.separator+result.getSave_file_name());
+			if(deleteImg.exists()) {
+				deleteImg.delete();
+			}
+			
+			reViewSvc.deleteCommentImage(commentId);
+			reViewSvc.deleteFileInfo(fileId);
+			reViewSvc.deleteComment(commentId);
+		}else {
+			result = reViewSvc.selectNotImgComment(commentId);
+			reViewSvc.deleteComment(commentId);
+		}
+		mav.setView(new RedirectView("http://localhost:14816/api/detail?id="+result.getProduct_id()));
+		return mav;
+	}
+	
+	@ResponseBody
+	@PostMapping("reservations/{commentId}/commentEdit")
+	public Map<String,Object> editComment(@PathVariable("commentId")int commentId,@ModelAttribute Test data ){
+		//if(check>0 && imageData == null) //기존 업로드한 사진을 사용하고 text내용만 바꿈
+		
+		//else if(check> 0 && imageData !=null) //업로드 새로하고 기존 사진 save_file_name 삭제
+		
+		//else if(check<1 && imageData != null) //사진이 없었다가 추가된 경우
+		
+		//else //사진없었고 또 없이 text만 수정한 경우
+		
+		System.out.println(data);
+		
+		Map<String,Object> map = new HashMap<>();
+		map.put("test","test");
+		return map;
 	}
 }

@@ -9,7 +9,7 @@
     <meta name="description" content="네이버 예약, 네이버 예약이 연동된 곳 어디서나 바로 예약하고, 네이버 예약 홈(나의예약)에서 모두 관리할 수 있습니다.">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
     <title>네이버 예약</title>
-    <link href="css/style.css" rel="stylesheet">
+    <link  rel="stylesheet" type="text/css" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script> -->
     <script src="js/detail.js"></script>
@@ -22,6 +22,7 @@
 
 <body>
 	<input type="hidden" value="${id}" id="detailId">
+	<input type="hidden" value="${email}" id="loginEmail">
     <div id="container">
         <div class="header fade">
             <header class="header_tit">
@@ -220,7 +221,10 @@
                                             <p class="review">{{comment}}</p>
                                         </div>
                                         <div class="info_area">
-                                            <div class="review_info"> <span class="grade">{{score}}</span> <span class="name">{{reservationName}}</span> <span class="date">{{#formatDate reservationDate}}{{reservationDate}}{{/formatDate}} 방문</span> </div>
+                                            <div class="review_info"> <span class="grade">{{score}}</span> <span class="name">{{reservationName}}</span> <span class="date">{{#formatDate reservationDate}}{{reservationDate}}{{/formatDate}} 방문</span>
+												<button type="button" class="editBtn" style="float:right; margin-left:10px;">수정</button> <button type="button" class="deleteBtn" style="float:right">삭제</button> <input type="hidden" value={{reservationEmail}} class="commentEmail">
+												<input type="hidden" value={{commentId}} class="commentId">
+											 </div>
                                         </div>
                                     </div>
                                 </li>
@@ -234,6 +238,8 @@
                                         </div>
                                         <div class="info_area">
                                             <div class="review_info"> <span class="grade">{{score}}</span> <span class="name">{{reservationName}}</span> <span class="date">{{#formatDate reservationDate}}{{reservationDate}}{{/formatDate}} 방문</span> </div>
+											<button type="button" class="editBtn" style="float:right; margin-left:10px;">수정</button> <button type="button" class="deleteBtn" style="float:right">삭제</button> <input type="hidden" value={{reservationEmail}} class="commentEmail">
+											<input type="hidden" value={{commentId}} class="commentId">
                                         </div>
                                     </div>
                                 </li>

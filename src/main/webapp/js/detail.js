@@ -109,8 +109,9 @@ function CommentEvent(detail){
 		let date = new Date(reservationDate)
 		return date.getFullYear()+"."+(date.getMonth()+1)+"."+date.getDate()
 	})
-		
-	for(let i=0;i<3;i++){
+	
+	let len = detail.comments.length < 3 ? detail.comments.length : 3
+	for(let i=0;i<len;i++){
 		if(detail.comments.length<1){
 			let li = document.createElement("li")
 			let h4 = document.createElement("h4")
@@ -211,6 +212,34 @@ function detailById(displayInfoId){
 				document.querySelector(".detail_info_lst .in_dsc").textContent = detail.displayInfo.productContent
 				document.querySelector(".info_tab_lst ._path .anchor").addEventListener("click",goLoadEvent)
 				document.querySelector(".info_tab_lst ._detail .anchor").addEventListener("click",productInfoEvent)
+				
+				//TEST EDIT
+				let loginEmail = document.querySelector("#loginEmail").value;
+				let commentList = document.querySelectorAll(".list_short_review li");
+				
+				for(let i=0;i<commentList.length;i++){
+					commentList[i].querySelector(".editBtn").addEventListener("click",function(){
+						let checkEmail = commentList[i].querySelector(".commentEmail").value;
+						if(checkEmail != loginEmail){
+							alert("작성자만 수정 가능합니다.");
+						}else{
+							let id = commentList[i].querySelector(".commentId").value
+							document.location.href = "reviewEdit?commentId="+id;
+						}
+					})
+				}
+				
+				//TEST DELETE
+				for(let i=0;i<commentList.length;i++){
+					commentList[i].querySelector(".deleteBtn").addEventListener("click",function(){
+					let id = commentList[i].querySelector(".commentId").value
+						if(confirm("정말 삭제하시겠습니까?") === true){
+							document.location.href = "reservation/delete/"+id
+						}	
+					})
+				}
+				
+				
 			}
 		}
 	})

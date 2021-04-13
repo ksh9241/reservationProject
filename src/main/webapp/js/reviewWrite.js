@@ -58,6 +58,7 @@ function fileUpLoad(evt){
 		},false)
 		reader.readAsDataURL(evt.target.files[0])*/
 		//debugger;
+		console.log(window.URL.createObjectURL(evt.target.files[0]))
 		myImage.src = window.URL.createObjectURL(evt.target.files[0])
 		
 		//데이터 보낼 때 사용하는 함수
@@ -87,12 +88,6 @@ function insertReviewEvent(){
 	formData.append("reservationInfoId",reservationInfoId)
 	formData.append("Score",Score)
 	formData.append("Comment",comment)
-	for(let key of formData.keys()){
-		console.log(key)
-		}
-	for(let value of formData.values()){ 
-		console.log(value)
-	}
 	
 	if(Score<=0 && comment.length === 0){
 		check = false

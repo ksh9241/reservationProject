@@ -155,7 +155,7 @@ function minusCountEvent(){
 			}
 		editTikketCount();
 		tikketButtonEvent()
-		
+		document.querySelector("#totalCount").innerText = (AdultCount+BabyCount+SetCount+YoungCount)
 			//티켓 예매 수량이 1개이상이라면 disable 클래스 제거
 			if((AdultCount+BabyCount+SetCount+YoungCount) > 0 ){
 				
@@ -182,7 +182,7 @@ function plusCountEvent(){
 			}
 		editTikketCount();
 		tikketButtonEvent()
-		
+		document.querySelector("#totalCount").innerText = (AdultCount+BabyCount+SetCount+YoungCount)
 			//티켓 예매 수량이 1개이상이라면 disable 클래스 제거
 			if((AdultCount+BabyCount+SetCount+YoungCount) > 0 ){
 				document.querySelector(".bk_btn_wrap").classList.remove("disable")
@@ -204,10 +204,6 @@ function reservation(detail){
 	
 	//티켓 버튼 비활성화
 	tikketButtonEvent()
-		
-	//총 얘매수 수정하기
-	document.querySelector("#totalCount").innerText = (AdultCount+BabyCount+SetCount+YoungCount)
-	
 	
 	//수량 빼기 이벤트
 	minusCountEvent()

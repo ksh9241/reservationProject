@@ -73,9 +73,6 @@ public class DetailController {
 		detail.setComments(commentSvc.commentsById(Integer.parseInt(displayInfoId)));
 		detail.setAverageScore(averageScore(detail));
 		
-		Map<String,Object> map = new HashMap<>();
-		map.put("data", detail);
-		
 		return detail;
 	}
 }
